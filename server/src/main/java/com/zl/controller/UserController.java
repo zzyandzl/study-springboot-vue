@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.common.Result;
+import com.zl.dto.UserDto;
 import com.zl.mapper.UserMapper;
 import com.zl.pojo.User;
 import com.zl.service.UserService;
@@ -37,23 +38,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-//    @GetMapping("/test")
-//    public List<User> index() {
-//        List<User> all = userMapper.findAll();
-//        return all;
-//    }
-
-//    @PostMapping("/saveorupdate")
-//    @ApiOperation(value = "用户新增或者更新", response = Result.class)
-//    public Result<?> saveorupdate(@RequestBody User user) {
-//        // 新增或者更新
-//        boolean flag = userService.saveUser(user);
-//        if(flag){
-//            return Result.susscess("新增或者更新成功");
-//        }else{
-//            return Result.error("-1","新增或者更新失败");
-//        }
-//    }
+    @PostMapping("/login")
+    @ApiOperation(value = "登录", response = Result.class)
+    public Result<?> login(@RequestBody UserDto userDto){
+        boolean flag = userService.login(userDto);
+        if(flag){
+            return Result.susscess("登录成功");
+        }else{
+            return Result.error("-1","登录失败，用户名或者密码错误");
+        }
+    }
 
     @GetMapping("/page")
     @ApiOperation(value = "分页查询", response = Result.class)
