@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zl.mapper.UserMapper">
+
+    <select id="queryTopage" resultType="com.zl.pojo.User">
+        select * from qingge.sys_user
+        <if test="username != null">
+            where username like concat('%',#{username},'%')
+        </if>
+        <if test="nickname != null">
+            and nickname like concat('%',#{nickname},'%')
+        </if>
+        <if test="address != null">
+            and address like concat('%',#{address},'%')
+        </if>
+        limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="selectTotalPage" resultType="integer">
+        select COUNT(*) from qingge.liqin_user
+    </select>
+
+    <update id="updateUser" parameterType="com.zl.pojo.User">
+        update sys_user
+        <trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+            <if test="username != null">
+                username = #{username},
+            </if>
+<!--            <if test="password != null">-->
+<!--                password = #{password},-->
+<!--            </if>-->
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="address != null">
+                address = #{address}
+            </if>
+        </trim>
+    </update>
+
+    <delete id="deleteIds" parameterType="java.util.List">
+       delete from sys_user
+       <where>
+           <if test="ids != null and ids != ''">
+               <foreach collection="ids" item="item" open="id in(" separator="," close=")">
+                   #{item}
+               </foreach>
+           </if>
+       </where>
+    </delete>
+</mapper>

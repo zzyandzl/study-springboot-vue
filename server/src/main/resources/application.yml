@@ -1,0 +1,27 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/qingge?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&useTimezone=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#打印sql语句日志
+logging:
+  level:
+    root: info
+    com:
+      example: debug
+
+#开启全局id自动生成策略
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath:mapper/*.xml #mybatis-plus中的xml文件默认位置为classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句
+
