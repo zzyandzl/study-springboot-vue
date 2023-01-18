@@ -21,6 +21,11 @@ const routes = [
         path: 'user',
         name: '系统管理/用户管理',
         component: () => import('../views/User.vue')
+      },
+      {
+        path: '/person',
+        name: '个人信息',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Person.vue')
       }
     ]
   },
@@ -37,7 +42,13 @@ const routes = [
     path: '/login',
     name: '登录页面',
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
-  }
+  },
+  {
+    path: '/register',
+    name: '注册页面',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
+  },
+
 ]
 
 const router = new VueRouter({
