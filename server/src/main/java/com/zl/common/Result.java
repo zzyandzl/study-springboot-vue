@@ -39,28 +39,28 @@ public class Result<T> {
 
     public static Result susscess(){
         Result result = new Result<>();
-        result.setCode("0");
+        result.setCode(Constants.CODE_0.getCode());
         result.setMsg("成功");
         return result;
     }
 
     public static <T> Result<T> susscess(T data){
         Result<T> result = new Result<>(data);
-        result.setCode("0");
+        result.setCode(Constants.CODE_0.getCode());
         result.setMsg("成功");
         return result;
     }
 
     public static Result susscess(String msg){
         Result result = new Result<>();
-        result.setCode("0");
+        result.setCode(Constants.CODE_0.getCode());
         result.setMsg(msg);
         return result;
     }
 
     public static <T> Result<T> susscess(String msg,T data){
         Result<T> result = new Result<>(data);
-        result.setCode("0");
+        result.setCode(Constants.CODE_0.getCode());
         result.setMsg(msg);
         return result;
     }

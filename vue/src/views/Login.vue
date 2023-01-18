@@ -45,30 +45,20 @@ export default {
   },
   methods: {
     login(){
-      // this.$refs['userForm'].validate((valid) => {
-      //   if (valid) {  // 表单校验合法
-      //     this.request.post("/user/login", this.user).then(res => {
-      //       if(!res) {
-      //         this.$message.error("用户名或密码错误")
-      //       } else {
-      //         this.$router.push("/")
-      //       }
-      //     })
-      //   } else {
-      //     return false;
-      //   }
-      // });
+
       this.$refs['userForm'].validate(valid => {
         if(valid){
           this.request.post("/user/login",this.user).then(res => {
-             if(!res) {
-               this.$message.error("用户名或密码错误")
-             } else {
+             if(res.code === '0') {
                this.$router.push("/")
+               this.$message.success("登录成功")
+               /*获取后端传送的用户信息数据，存入前端浏览器*/
+               localStorage.setItem("user",JSON.stringify(res.data))
+               console.log(JSON.stringify(res.data))
+             } else {
+               this.$message.error(res.msg)
              }
           })
-        }else{
-          return false;
         }
       });
     },

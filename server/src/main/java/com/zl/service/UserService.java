@@ -11,5 +11,5 @@ public interface UserService extends IService<User> {
 
     boolean deleteIds(List<Integer> ids);
 
-    boolean login(UserDto userDto);
+    UserDto login(UserDto userDto);
 }

@@ -9,6 +9,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zl.common.Constants;
 import com.zl.common.Result;
 import com.zl.dto.UserDto;
 import com.zl.mapper.UserMapper;
@@ -41,12 +42,10 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperation(value = "登录", response = Result.class)
     public Result<?> login(@RequestBody UserDto userDto){
-        boolean flag = userService.login(userDto);
-        if(flag){
-            return Result.susscess("登录成功");
-        }else{
-            return Result.error("-1","登录失败，用户名或者密码错误");
+        if("".equals(userDto.getUsername()) || "".equals(userDto.getPassword())){
+            return Result.error(Constants.CODE_400.getCode(),"登录失败，参数不可以有空值");
         }
+       return Result.susscess(userService.login(userDto));
     }
 
     @GetMapping("/page")
