@@ -66,4 +66,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         }
     }
 
+    @Override
+    public UserDto register(UserDto userDto) {
+        User user = getUserInfo(userDto);
+        if(user != null){
+            throw new ServiceException(Constants.CODE_600.getCode(), "用户已存在");
+        }else{
+//            System.out.println("user=========>"+user);
+            user = new User();
+//            System.out.println("user01=========>"+user);
+            BeanUtils.copyProperties(userDto,user);
+//          将用户信息存入
+            save(user);
+        }
+        return userDto;
+    }
+
+    private User getUserInfo(UserDto userDto) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", userDto.getUsername());
+        queryWrapper.eq("password", userDto.getPassword());
+        User user = new User();
+        try {
+            user = getOne(queryWrapper); // 从数据库查询用户信息
+        } catch (Exception e) {
+            LOG.error(e);
+            throw new ServiceException(Constants.CODE_402.getCode(), "系统错误");
+        }
+        return user;
+    }
 }

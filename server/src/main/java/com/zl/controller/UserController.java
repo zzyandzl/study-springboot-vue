@@ -48,6 +48,15 @@ public class UserController {
        return Result.susscess(userService.login(userDto));
     }
 
+    @PostMapping("/register")
+    @ApiOperation(value = "注册", response = Result.class)
+    public Result<?> register(@RequestBody UserDto userDto){
+        if("".equals(userDto.getUsername()) || "".equals(userDto.getPassword())){
+            return Result.error(Constants.CODE_400.getCode(),"注册失败，参数不可以有空值");
+        }
+        return Result.susscess(userService.register(userDto));
+    }
+
     @GetMapping("/page")
     @ApiOperation(value = "分页查询", response = Result.class)
     public Result<?> findAllByPage(@RequestParam Integer pageNum,
@@ -63,6 +72,15 @@ public class UserController {
         queryWrapper.orderByDesc("id");
         IPage<User> userIPage = userService.page(page, queryWrapper);
         return Result.susscess(userIPage);
+    }
+
+    @GetMapping("/username/{username}")
+    @ApiOperation(value = "个人信息查询", response = Result.class)
+    public Result<?> querytUser(@PathVariable("username") String username){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        User user = userService.getOne(queryWrapper);
+        return Result.susscess(user);
     }
 
     @PostMapping("/add")
