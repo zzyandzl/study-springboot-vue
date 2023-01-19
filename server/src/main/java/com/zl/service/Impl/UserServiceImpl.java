@@ -10,6 +10,7 @@ import com.zl.dto.UserDto;
 import com.zl.mapper.UserMapper;
 import com.zl.pojo.User;
 import com.zl.service.UserService;
+import com.zl.utils.TokenUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
              * 参数三：忽略大小写
              * */
             BeanUtils.copyProperties(user,userDto);
-            System.out.println("userdto=====>"+userDto);
+//          创建token,并将值传给dto
+            String token = TokenUtils.getToken(user.getId().toString(), user.getPassword());
+            userDto.setToken(token);
+
             return userDto;
         }else{
             throw new ServiceException(Constants.CODE_600.getCode(),"用户名密码错误");

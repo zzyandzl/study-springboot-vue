@@ -15,6 +15,7 @@ import com.zl.dto.UserDto;
 import com.zl.mapper.UserMapper;
 import com.zl.pojo.User;
 import com.zl.service.UserService;
+import com.zl.utils.TokenUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +71,11 @@ public class UserController {
         queryWrapper.like(StrUtil.isNotBlank(email),"email",email);
         queryWrapper.like(StrUtil.isNotBlank(address),"address",address);
         queryWrapper.orderByDesc("id");
+
+//      通过token获取当前用户信息
+        User currentUser = TokenUtils.getCurrentUser();
+        System.out.println("currentUser=============>"+currentUser);
+
         IPage<User> userIPage = userService.page(page, queryWrapper);
         return Result.susscess(userIPage);
     }

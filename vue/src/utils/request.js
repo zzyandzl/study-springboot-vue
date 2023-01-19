@@ -11,7 +11,10 @@ const request = axios.create({
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
 
-    // config.headers['token'] = user.token;  // 设置请求头
+    let user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
+    if(user){
+        config.headers['token'] = user.token;  // 设置请求头
+    }
     return config
 }, error => {
     return Promise.reject(error)
@@ -29,6 +32,13 @@ request.interceptors.response.use(
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.stringify(res) : res
+        }
+        // 当权限验证不通过的时候给出提示
+        if (res.code === '101') {
+            ElementUI.Message({
+                message: res.msg,
+                type: 'error'
+            });
         }
         return res;
     },

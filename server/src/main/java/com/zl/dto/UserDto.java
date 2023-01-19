@@ -10,4 +10,5 @@ public class UserDto implements Serializable {
     private String password;
     private String nickname;
     private String avatarUrl;
+    private String token;
 }
