@@ -32,6 +32,11 @@ const routes = [
         name: '文件管理',
         component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')
       },
+      {
+        path: '/echarts',
+        name: 'Echarts图表管理',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Echarts.vue')
+      }
     ]
   },
 
