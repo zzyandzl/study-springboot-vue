@@ -25,3 +25,7 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句
 
+#文件下载路径
+files:
+  upload:
+    path: E:\后端学习\springboot+vue\study-springboot-vue\server\src\main\resources\static\img\

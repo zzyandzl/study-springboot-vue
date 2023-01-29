@@ -65,12 +65,6 @@ public class Result<T> {
         return result;
     }
 
-    public static Result susscess(String code, String msg){
-        Result result = new Result<>();
-        result.setCode(code);
-        result.setMsg(msg);
-        return result;
-    }
 
     public static <T> Result<T> susscess(String code,String msg,T data){
         Result<T> result = new Result<>(data);
