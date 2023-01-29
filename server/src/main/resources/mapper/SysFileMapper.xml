@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zl.mapper.FileMapper">
+
+    <delete id="deleteIds" parameterType="java.util.List">
+        delete from sys_file
+        <where>
+            <if test="ids != null and ids != ''">
+                <foreach collection="ids" item="item" separator="," open="id in (" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+<!--    <insert id="updateFiles" parameterType="list">-->
+<!--        insert into sys_file-->
+<!--    </insert>-->
+</mapper>

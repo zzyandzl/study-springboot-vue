@@ -26,7 +26,12 @@ const routes = [
         path: '/person',
         name: '个人信息',
         component: () => import(/* webpackChunkName: "about" */ '../views/Person.vue')
-      }
+      },
+      {
+        path: '/file',
+        name: '文件管理',
+        component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')
+      },
     ]
   },
 
