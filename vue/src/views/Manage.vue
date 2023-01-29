@@ -11,13 +11,13 @@
     <el-container>
       <!--右边顶部-->
       <el-header style="font-size: 12px; line-height: 60px;border-bottom: 1px solid #ccc; display: flex">
-        <Header :collapseBtnClass="collapseBtnClass" :collapse="collapse"></Header>
+        <Header :collapseBtnClass="collapseBtnClass" :collapse="collapse" :user="user"></Header>
       </el-header>
 
       <!--主体内容-->
       <el-main style="flex: none; margin-top: -30px">
         <!--当前页面的子路由会在router-view里面展示-->
-        <router-view/>
+        <router-view @refreshUser="getUser"/>
       </el-main>
     </el-container>
   </el-container>
@@ -44,7 +44,12 @@ export default {
       //后台管理系统区域，默认显示
       logoTextShow:true,
       pathName: '',
+      user: {},
     }
+  },
+  created() {
+    //从后台获取最新的个人信息
+    this.getUser()
   },
   methods: {
     //左侧导航栏收缩展开
@@ -63,6 +68,13 @@ export default {
         //后台管理系统区域显示
         this.logoTextShow=true
       }
+    },
+    //当person页面修改时从后台拿到修改后的数据
+    getUser(){
+      let username = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).username : {}
+      this.request.get("/user/username/" + username).then(res => {
+        this.user = res.data
+      })
     },
   },
 }

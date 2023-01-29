@@ -14,7 +14,7 @@
 
     <el-form label-width="80px" size="small">
       <el-form-item label="用户名">
-        <el-input v-model="form.username" autocomplete="off"></el-input>
+        <el-input v-model="form.username" disabled autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="昵称">
         <el-input v-model="form.nickname" autocomplete="off"></el-input>
@@ -26,7 +26,7 @@
         <el-input v-model="form.phone" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="地址">
-        <el-input v-model="form.address" autocomplete="off"></el-input>
+        <el-input type="textarea" v-model="form.address" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item style = "text-align: center">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -48,10 +48,13 @@ export default {
   created() {
     this.getUser().then(res => {
       console.log(res)
+      //这里的res代表接收getUser的返回值，也就是res.data
       this.form = res
     })
   },
   methods: {
+    //async：异步函数，不会阻塞后面代码执行
+    //await，在async异步函数中表示最后执行该方法
     async getUser() {
       return (await this.request.get("/user/username/" + this.user.username)).data
     },
@@ -59,11 +62,14 @@ export default {
       this.request.put("/user/update",this.form).then(res=>{
         if(res.code === '0'){
           this.$message.success("修改用户信息成功")
-          // 更新浏览器存储的用户信息
-          this.getUser().then(res => {
-            res.token = JSON.parse(localStorage.getItem("user")).token
-            localStorage.setItem("user", JSON.stringify(res))
-          })
+          // // 更新浏览器存储的用户信息
+          // this.getUser().then(res => {
+          //   res.token = JSON.parse(localStorage.getItem("user")).token
+          //   localStorage.setItem("user", JSON.stringify(res))
+          // })
+
+        //修改时触发父级的方法去修改User(使用vue的事件总线去处理，emit：调用自定义的分发事件)
+          this.$emit("refreshUser")
         }else{
           this.$message.success("修改用户信息失败")
         }
