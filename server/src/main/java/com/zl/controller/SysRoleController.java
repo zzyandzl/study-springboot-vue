@@ -92,4 +92,18 @@ public class SysRoleController {
             return Result.error("-1","批量删除失败");
         }
     }
+
+    @PostMapping("/rolemenu/{roleId}")
+    @ApiOperation(value = "角色菜单绑定", response = Result.class)
+    public Result<?> RoleMenu(@PathVariable("roleId") Integer roleId,@RequestBody List<Integer> menuIds){
+        sysRoleService.setRoleMenu(roleId,menuIds);
+        return Result.susscess();
+    }
+
+    @GetMapping("/rolemenu/{roleId}")
+    @ApiOperation(value = "个人角色菜单", response = Result.class)
+    public Result<?> RoleMenu(@PathVariable("roleId") Integer roleId){
+        List<Integer> roleMenu = sysRoleService.getRoleMenu(roleId);
+        return Result.susscess(roleMenu);
+    }
 }

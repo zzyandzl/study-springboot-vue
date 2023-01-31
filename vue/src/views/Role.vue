@@ -89,27 +89,19 @@
 
         <!--菜单分配-->
         <el-dialog title="菜单分配" :visible.sync="menuDialogVis" width="30%">
-
-<!--          <el-tree-->
-<!--              :props="props"-->
-<!--              :data="menuData"-->
-<!--              show-checkbox-->
-<!--              node-key="id"-->
-<!--              ref="tree"-->
-<!--              :default-expanded-keys="expends"-->
-<!--              :default-checked-keys="checks">-->
           <el-tree
               :props="props"
               :data="menuData"
               show-checkbox
               node-key="id"
-              :default-expanded-keys="[1]"
-              :default-checked-keys="[4]">
+              ref="tree"
+              :default-expanded-keys="expands"
+              :default-checked-keys="checks">
           <!--default-expanded-keys和default-checked-keys设置默认展开和默认选中的节点-->
           <!--必须设置node-key，其值为节点数据中的一个字段名，该字段在整棵树中是唯一的-->
-<!--         <span class="custom-tree-node" slot-scope="{ node, data }">-->
-<!--            <span><i :class="data.icon"></i> {{ data.name }}</span>-->
-<!--         </span>-->
+         <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span><i :class="data.icon"></i> {{ data.name }}</span>
+         </span>
           </el-tree>
           <div slot="footer" class="dialog-footer">
             <el-button @click="menuDialogVis = false">取 消</el-button>
@@ -179,7 +171,12 @@ export default {
       props: {
         label: 'name'
       },
-
+    //获取后台菜单表的id数组
+      expands: [],
+    //
+      checks: [],
+    //角色id
+      roleId: 0,
     }
   },
   created() {
@@ -293,9 +290,14 @@ export default {
         }
       })
     },
+  //
+    handleCheckChange(data, checked, indeterminate) {
+      console.log(data, checked, indeterminate);
+    },
     //打开菜单分配
     handleMenu(roleId){
       this.menuDialogVis = true;
+      this.roleId = roleId;
       //获取所有菜单
       this.request.get("/menu/all",{
         params: {
@@ -304,17 +306,27 @@ export default {
       }).then(res =>{
         console.log(res)
         this.menuData = res.data
+        // 把后台返回的菜单数据处理成 id数组
+        this.expands = this.menuData.map(v => v.id)
+      })
+    // 获取角色的个人菜单
+      this.request.get("/role/rolemenu/"+roleId).then(res => {
+        this.checks = res.data
       })
     },
-  //
-    handleCheckChange(data, checked, indeterminate) {
-      console.log(data, checked, indeterminate);
+    //角色绑定菜单
+    saveRoleMenu(){
+      console.log(this.$refs.tree.getCheckedKeys())
+      console.log(this.roleId)
+      this.request.post("/role/rolemenu/"+this.roleId,this.$refs.tree.getCheckedKeys()).then(res => {
+        if (res.code === '0') {
+          this.$message.success("绑定成功")
+          this.menuDialogVis = false
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
-    //
-    selectMenu(){
-
-    },
-    saveRoleMenu(){},
   },
 }
 </script>

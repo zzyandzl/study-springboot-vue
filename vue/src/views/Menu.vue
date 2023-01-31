@@ -39,7 +39,11 @@
           </el-table-column>
           <el-table-column prop="path" label="路径" width="110">
           </el-table-column>
-          <el-table-column prop="icon" label="图标" width="110">
+          <el-table-column label="图标" class-name="fontSize18" align="center" label-class-name="fontSize12">
+            <template slot-scope="scope">
+            <!--通过给class属性赋值来显示图标-->
+              <span :class="scope.row.icon" />
+            </template>
           </el-table-column>
           <el-table-column prop="description" label="描述" width="110">
           </el-table-column>
@@ -81,7 +85,11 @@
               <el-input v-model="form.path" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="图标">
-              <el-input v-model="form.icon" autocomplete="off"></el-input>
+              <el-select clearable v-model="form.icon" placeholder="请选择" style="width: 100%">
+                <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
+                  <i :class="item.value" /> {{ item.name }}
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="描述">
               <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -116,6 +124,8 @@ export default {
       form: {},
       //批量删除对象数组
       multipleSelection: [],
+    //
+      options: [],
     }
   },
   created() {
@@ -144,6 +154,11 @@ export default {
       }).then(res =>{
         console.log(res)
         this.tableData = res.data
+      })
+
+      //请求图标数据
+      this.request.get("/menu/icons").then(res =>{
+        this.options = res.data
       })
     },
     //查询重置

@@ -4,9 +4,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zl.common.Constants;
 import com.zl.common.Result;
+import com.zl.mapper.SysDictMapper;
 import com.zl.mapper.SysMenuMapper;
+import com.zl.pojo.SysDict;
 import com.zl.pojo.SysMenu;
+import com.zl.service.SysDictService;
 import com.zl.service.SysMenuService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,12 @@ public class SysMenuController {
 
     @Autowired
     private SysMenuMapper sysMenuMapper;
+
+    @Autowired
+    private SysDictService sysDictService;
+
+    @Autowired
+    private SysDictMapper sysDictMapper;
 
     @GetMapping("/page")
     @ApiOperation(value = "分页查询", response = Result.class)
@@ -98,5 +108,13 @@ public class SysMenuController {
         }else{
             return Result.error("-1","批量删除失败");
         }
+    }
+
+    @GetMapping("/icons")
+    @ApiOperation(value = "查询菜单图标", response = Result.class)
+    public Result<?> queryAllIcons(){
+        QueryWrapper<SysDict> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", Constants.DICT_ICON.getCode());
+        return Result.susscess(sysDictMapper.selectList(queryWrapper));
     }
 }

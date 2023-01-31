@@ -3,6 +3,8 @@ package com.zl.pojo;
 import cn.hutool.core.annotation.Alias;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +43,12 @@ public class User implements Serializable {
     @Alias("地址")
     private String address;
 
+    @TableField(value = "avatar_url")  // 指定数据库的字段名称
+    private String avatarUrl;
+
+    @ApiModelProperty("个人角色权限")
+    private String role;
+
     @JsonIgnore
     @TableField(fill = FieldFill.INSERT,value = "create_time")
     private Date createTime;
@@ -49,6 +57,5 @@ public class User implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE,value = "update_time")
     private Date updateTime;
 
-    @TableField(value = "avatar_url")  // 指定数据库的字段名称
-    private String avatarUrl;
+
 }
