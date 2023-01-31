@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 @TableName("sys_menu")
 @ApiModel(value = "Menu菜单对象", description = "")
+@ToString
 public class SysMenu implements Serializable {
     private static final long serialVersionUID = 1L;
 

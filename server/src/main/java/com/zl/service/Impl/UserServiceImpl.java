@@ -7,22 +7,41 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zl.common.Constants;
 import com.zl.common.ServiceException;
 import com.zl.dto.UserDto;
+import com.zl.mapper.SysMenuMapper;
+import com.zl.mapper.SysRoleMapper;
+import com.zl.mapper.SysRoleMenuMapper;
 import com.zl.mapper.UserMapper;
+import com.zl.pojo.SysMenu;
 import com.zl.pojo.User;
+import com.zl.service.SysMenuService;
 import com.zl.service.UserService;
 import com.zl.utils.TokenUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
 
     private static final Log LOG = Log.get();
+
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private SysMenuService sysMenuService;
+
+    @Autowired
+    private SysMenuMapper sysMenuMapper;
+
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
+
+    @Autowired
+    private SysRoleMenuMapper sysRoleMenuMapper;
 
     @Override
     public boolean saveUser(User user) {
@@ -64,6 +83,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
             String token = TokenUtils.getToken(user.getId().toString(), user.getPassword());
             userDto.setToken(token);
 
+//          获取当前用户的角色权限
+            String role = user.getRole(); // ROLE_ADMIN
+            // 获取当前用户的菜单列表
+            List<SysMenu> roleMenus = getRoleMenus(role);
+
+            userDto.setMenus(roleMenus);
+
             return userDto;
         }else{
             throw new ServiceException(Constants.CODE_600.getCode(),"用户名密码错误");
@@ -98,5 +124,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
             throw new ServiceException(Constants.CODE_402.getCode(), "系统错误");
         }
         return user;
+    }
+
+    /**
+     * 获取当前角色的菜单列表
+     * @param roleFlag
+     * @return
+     */
+    private List<SysMenu> getRoleMenus(String roleFlag) {
+        Integer roleId = sysRoleMapper.selectByFlag(roleFlag);
+        // 当前角色的所有菜单id集合
+        List<Integer> menuIds = sysRoleMenuMapper.selectByRoleId(roleId);
+
+        // 查出系统所有的菜单(树形)
+        List<SysMenu> menus = sysMenuService.queryAllMenu("");
+        // new一个最后筛选完成之后的list
+        List<SysMenu> roleMenus = new ArrayList<>();
+        // 筛选当前用户角色的菜单
+        for (SysMenu menu : menus) {
+            if (menuIds.contains(menu.getId())) {
+                roleMenus.add(menu);
+            }
+            List<SysMenu> children = menu.getChildren();
+            // java8新特性：removeIf()  移除 children 里面不在 menuIds集合中的 元素
+            children.removeIf(child -> !menuIds.contains(child.getId()));
+        }
+        return roleMenus;
     }
 }

@@ -39,6 +39,15 @@ public class SysRoleController {
         return Result.susscess(userIPage);
     }
 
+    @GetMapping("/all")
+    @ApiOperation(value = "查询所有", response = Result.class)
+    public Result<?> findAll(){
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id");
+        List<SysRole> sysRoleList = sysRoleMapper.selectList(queryWrapper);
+        return Result.susscess(sysRoleList);
+    }
+
     @GetMapping("/name/{name}")
     @ApiOperation(value = "个人角色查询", response = Result.class)
     public Result<?> queryRole(@PathVariable("name") String name){

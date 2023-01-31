@@ -93,9 +93,6 @@ public class UserController {
     @ApiOperation(value = "新增用户信息", response = Result.class)
     public Result<?> addUser(@RequestBody User user){
         System.out.println(user);
-        if(user.getRole() == null){
-            user.setRole("ROLE_USER");
-        }
         user.setPassword("123456");
         boolean flag = userService.save(user);
         if(flag){

@@ -51,18 +51,8 @@ public class SysMenuController {
     @GetMapping("/all")
     @ApiOperation(value = "全部菜单", response = Result.class)
     public Result<?> queryAllMenu(@RequestParam(defaultValue = "") String name){
-        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
-//      查询所有数据
-        List<SysMenu> sysMenuList = sysMenuService.list(queryWrapper);
-//      查询一级菜单
-        List<SysMenu> parentNode = sysMenuList.stream().filter(sysMenu -> sysMenu.getPid() == null).collect(Collectors.toList());
-//      查询一级菜单的子菜单
-        for (SysMenu menu : parentNode){
-//          筛选出二级菜单pid=一级菜单id的就是二级菜单
-            menu.setChildren(sysMenuList.stream().filter(m -> menu.getId().equals(m.getPid())).collect(Collectors.toList()));
-        }
-        return Result.susscess(parentNode);
+        List<SysMenu> sysMenus = sysMenuService.queryAllMenu(name);
+        return Result.susscess(sysMenus);
     }
 
     @PostMapping("/add")

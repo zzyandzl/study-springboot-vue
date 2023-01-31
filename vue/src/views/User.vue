@@ -48,6 +48,8 @@
           </el-table-column>
           <el-table-column prop="address" label="地址" width="160">
           </el-table-column>
+          <el-table-column prop="role" label="角色" width="160">
+          </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
                 <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
@@ -89,6 +91,13 @@
             <el-form-item label="昵称">
               <el-input v-model="form.nickname" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="角色">
+              <!-- el-select中的 v-model属性值要与:key的属性值一致-->
+              <el-select clearable v-model="form.role" placeholder="请选择角色" style="width: 100%">
+                <el-option v-for="item in roles" :key="item.name" :label="item.name" :value="item.flag">
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="邮箱">
               <el-input v-model="form.email" autocomplete="off"></el-input>
             </el-form-item>
@@ -100,7 +109,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button @click="cancel">取 消</el-button>
             <el-button type="primary" @click="addorUpdateUser">确 定</el-button>
           </div>
         </el-dialog>
@@ -138,6 +147,8 @@ export default {
       form: {},
       //批量删除对象数组
       multipleSelection: [],
+    //  角色权限数组
+      roles: []
     }
   },
   created() {
@@ -172,6 +183,11 @@ export default {
         this.tableData = res.data.records
         this.total = res.data.total
       })
+
+    // 请求全部角色权限
+      this.request.get("/role/all").then(res => {
+        this.roles = res.data
+      })
     },
     //查询重置
     reset() {
@@ -199,6 +215,10 @@ export default {
     handleEdit(row){
       this.dialogFormVisible = true;
       this.form = row
+    },
+  //
+    cancel(){
+      this.dialogFormVisible = false
     },
   //新增或修改用户信息
     addorUpdateUser(){

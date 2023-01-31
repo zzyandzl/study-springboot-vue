@@ -54,6 +54,8 @@ export default {
                this.$message.success("登录成功")
                /*获取后端传送的用户信息数据，存入前端浏览器*/
                localStorage.setItem("user",JSON.stringify(res.data))
+               /*获取当前用户所能拥有的菜单*/
+               localStorage.setItem("menus",JSON.stringify(res.data.menus))
                console.log(JSON.stringify(res.data))
              } else {
                this.$message.error(res.msg)

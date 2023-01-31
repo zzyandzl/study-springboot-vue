@@ -6,6 +6,13 @@
         <el-form-item prop="username">
           <el-input placeholder="请输入账号" size="medium" style="margin: 5px 0" prefix-icon="el-icon-user" v-model="user.username"></el-input>
         </el-form-item>
+        <el-form-item prop="role" >
+          <!-- el-select中的 v-model属性值要与:key的属性值一致-->
+          <el-select clearable v-model="user.role" placeholder="请选择角色" style="width: 100%" size="medium">
+            <el-option v-for="item in roles" :key="item.name" :label="item.name" :value="item.flag">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item prop="password">
           <el-input placeholder="请输入密码" size="medium" style="margin: 5px 0" prefix-icon="el-icon-lock" show-password v-model="user.password"></el-input>
         </el-form-item>
@@ -32,6 +39,10 @@ export default {
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
+        role: [
+          { required: true, message: '请选择角色', trigger: 'blur' },
+          { min: 3, max: 20, message: '长度在 2 到 6 个字符', trigger: 'blur' }
+        ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
@@ -40,10 +51,20 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ],
-      }
+      },
+      roles: [],
     }
   },
+  created() {
+    this.load()
+  },
   methods: {
+    load(){
+      // 请求全部角色权限
+      this.request.get("/role/all").then(res => {
+        this.roles = res.data
+      })
+    },
     login() {
       this.$refs['userForm'].validate((valid) => {
         if (valid) {  // 表单校验合法
@@ -61,7 +82,7 @@ export default {
           })
         }
       });
-    }
+    },
   }
 }
 </script>
