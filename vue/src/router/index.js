@@ -36,7 +36,17 @@ const routes = [
         path: '/echarts',
         name: 'Echarts图表管理',
         component: () => import(/* webpackChunkName: "about" */ '../views/Echarts.vue')
-      }
+      },
+      {
+        path: '/role',
+        name: '角色管理',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Role.vue')
+      },
+      {
+        path: '/menu',
+        name: '菜单管理',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Menu.vue')
+      },
     ]
   },
 

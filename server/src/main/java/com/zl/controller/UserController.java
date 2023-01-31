@@ -82,7 +82,7 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     @ApiOperation(value = "个人信息查询", response = Result.class)
-    public Result<?> querytUser(@PathVariable("username") String username){
+    public Result<?> queryUser(@PathVariable("username") String username){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",username);
         User user = userService.getOne(queryWrapper);

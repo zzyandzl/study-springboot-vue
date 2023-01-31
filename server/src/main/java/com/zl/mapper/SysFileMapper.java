@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface FileMapper extends BaseMapper<SysFile> {
+public interface SysFileMapper extends BaseMapper<SysFile> {
 
     Integer updateFiles(@Param("fileList") List<SysFile> sysFileList);
 }

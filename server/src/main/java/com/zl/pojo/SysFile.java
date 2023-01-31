@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @TableName("sys_file")
-public class SysFile {
+public class SysFile implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Integer id;

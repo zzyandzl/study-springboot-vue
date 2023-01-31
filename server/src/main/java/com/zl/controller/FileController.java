@@ -8,11 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.common.Result;
-import com.zl.mapper.FileMapper;
+import com.zl.mapper.SysFileMapper;
 import com.zl.pojo.SysFile;
-import com.zl.pojo.User;
-import com.zl.service.FileService;
-import com.zl.utils.TokenUtils;
+import com.zl.service.SysFileService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,10 +29,10 @@ import java.util.List;
 public class FileController {
 
     @Autowired
-    private FileService fileService;
+    private SysFileService sysFileService;
 
     @Autowired
-    private FileMapper fileMapper;
+    private SysFileMapper sysFileMapper;
 
     @Value("${files.upload.path}")
     private String fileUploadPath;
@@ -90,7 +88,7 @@ public class FileController {
         sysFile.setSize(size / 1024);
         sysFile.setUrl(url);
         sysFile.setMd5(md5);
-        fileService.save(sysFile);
+        sysFileService.save(sysFile);
         return Result.susscess(url);
     }
 
@@ -124,7 +122,7 @@ public class FileController {
     public SysFile getFileByMD5(String md5){
         QueryWrapper<SysFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("md5",md5);
-        List<SysFile> sysFileList = fileMapper.selectList(queryWrapper);
+        List<SysFile> sysFileList = sysFileMapper.selectList(queryWrapper);
 //      多个文件如果重复则返回第一个文件，否则返回null
         return sysFileList.size() == 0 ? null : sysFileList.get(0);
     }
@@ -139,15 +137,15 @@ public class FileController {
         queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
         queryWrapper.eq("is_delete",0);
         queryWrapper.orderByDesc("id");
-        IPage<SysFile> fileIPage = fileService.page(page, queryWrapper);
+        IPage<SysFile> fileIPage = sysFileService.page(page, queryWrapper);
         return Result.susscess(fileIPage);
     }
 
     @PutMapping("/update")
     @ApiOperation(value = "更新文件信息", response = Result.class)
-    public Result<?> updateUser(@RequestBody SysFile sysFile){
+    public Result<?> updateFile(@RequestBody SysFile sysFile){
         System.out.println("sysfile====>"+sysFile);
-        boolean flag = fileService.updateById(sysFile);
+        boolean flag = sysFileService.updateById(sysFile);
         if(flag){
             return Result.susscess("更新成功");
         }else{
@@ -158,10 +156,10 @@ public class FileController {
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除文件信息", response = Result.class)
     public Result<?> delete(@PathVariable("id") Integer id) {
-        SysFile sysFile = fileService.getById(id);
+        SysFile sysFile = sysFileService.getById(id);
 //      逻辑删除
         sysFile.setIsDelete(true);
-        boolean flag = fileService.saveOrUpdate(sysFile);
+        boolean flag = sysFileService.saveOrUpdate(sysFile);
         if(flag){
             return Result.susscess("删除成功");
         }else{
@@ -171,13 +169,13 @@ public class FileController {
 
     @PostMapping("/batch/delete")
     @ApiOperation(value = "批量删除文件信息", response = Result.class)
-    public Result<?> BatchDeleteUser(@RequestBody List<Integer> ids){
+    public Result<?> BatchDeleteFile(@RequestBody List<Integer> ids){
         QueryWrapper<SysFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("id",ids);
-        List<SysFile> sysFileList = fileMapper.selectList(queryWrapper);
+        List<SysFile> sysFileList = sysFileMapper.selectList(queryWrapper);
         for (SysFile file : sysFileList) {
             file.setIsDelete(true);
-            fileService.saveOrUpdate(file);
+            sysFileService.saveOrUpdate(file);
         }
         return Result.susscess("批量删除成功");
     }
