@@ -55,6 +55,12 @@ public class SysMenuController {
         return Result.susscess(sysMenus);
     }
 
+    @GetMapping("/ids")
+    @ApiOperation(value = "全部菜单id", response = Result.class)
+    public Result<?> queryAllIds(){
+        return Result.susscess(sysMenuService.list().stream().map(SysMenu::getId));
+    }
+
     @PostMapping("/add")
     @ApiOperation(value = "新增菜单信息", response = Result.class)
     public Result<?> addMenu(@RequestBody SysMenu sysMenu){

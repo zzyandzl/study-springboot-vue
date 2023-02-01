@@ -22,6 +22,9 @@
 </template>
 
 <script>
+
+import {setRoutes} from "@/router";
+
 export default {
   name: "Login",
   data() {
@@ -50,12 +53,14 @@ export default {
         if(valid){
           this.request.post("/user/login",this.user).then(res => {
              if(res.code === '0') {
-               this.$router.push("/")
                this.$message.success("登录成功")
                /*获取后端传送的用户信息数据，存入前端浏览器*/
                localStorage.setItem("user",JSON.stringify(res.data))
                /*获取当前用户所能拥有的菜单*/
                localStorage.setItem("menus",JSON.stringify(res.data.menus))
+               //第二步：在登录界面动态设置当前路径路由
+               setRoutes()
+               this.$router.push("/")
                console.log(JSON.stringify(res.data))
              } else {
                this.$message.error(res.msg)

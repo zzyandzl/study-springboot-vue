@@ -84,6 +84,9 @@
             <el-form-item label="路径">
               <el-input v-model="form.path" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="页面路径">
+              <el-input v-model="form.pagePath" autocomplete="off"></el-input>
+            </el-form-item>
             <el-form-item label="图标">
               <el-select clearable v-model="form.icon" placeholder="请选择" style="width: 100%">
                 <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">

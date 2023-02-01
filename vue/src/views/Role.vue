@@ -37,7 +37,7 @@
           </el-table-column>
           <el-table-column label="操作" width="280" align="center">
             <template slot-scope="scope">
-              <el-button type="info" @click="handleMenu(scope.row.id)">分配菜单<i class="el-icon-menu"></i></el-button>
+              <el-button type="info" @click="handleMenu(scope.row)">分配菜单<i class="el-icon-menu"></i></el-button>
               <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
               <el-popconfirm
                   class="ml-8"
@@ -177,6 +177,8 @@ export default {
       checks: [],
     //角色id
       roleId: 0,
+    // 角色唯一标识
+      roleFlag: '',
     }
   },
   created() {
@@ -295,9 +297,10 @@ export default {
       console.log(data, checked, indeterminate);
     },
     //打开菜单分配
-    handleMenu(roleId){
+    handleMenu(role){
       this.menuDialogVis = true;
-      this.roleId = roleId;
+      this.roleId = role.id;
+      this.roleFlag = role.flag
       //获取所有菜单
       this.request.get("/menu/all",{
         params: {
@@ -310,8 +313,24 @@ export default {
         this.expands = this.menuData.map(v => v.id)
       })
     // 获取角色的个人菜单
-      this.request.get("/role/rolemenu/"+roleId).then(res => {
+      this.request.get("/role/rolemenu/"+this.roleId).then(res => {
         this.checks = res.data
+        // //先渲染弹框里面的元素
+        // this.menuDialogVis = true
+        this.request.get("/menu/ids").then(res => {
+          const ids = res.data
+          ids.forEach(id => {
+            //通过checks角色自己菜单id和所有的菜单id相对比，如果id不存在，则设置为false
+            if(!this.checks.includes(id)){
+              //将回调延迟到下次DOM更新循环之后执行。在修改数据之后立即使用它，然后等待DOM更新。
+              this.$nextTick(() => {
+                this.$refs.tree.setChecked(id,false)
+              })
+            }
+          })
+          this.menuDialogVis = true
+        })
+
       })
     },
     //角色绑定菜单
@@ -322,6 +341,14 @@ export default {
         if (res.code === '0') {
           this.$message.success("绑定成功")
           this.menuDialogVis = false
+
+          //操作管理员角色时才退出
+          if(this.roleFlag === 'ROLE_ADMIN'){
+            //绑定成功后需要退出重新登录
+            this.$store.commit("logout")
+          }
+
+
         } else {
           this.$message.error(res.msg)
         }
